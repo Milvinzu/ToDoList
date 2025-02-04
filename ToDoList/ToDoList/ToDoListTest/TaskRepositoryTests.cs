@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using ToDoList.Data;
 using ToDoList.Models;
-using ToDoList.Repositories;
 using ToDoList.Repositories.Interfaces;
+using ToDoList.Repositories;
 using ToDoListTest.Data;
 
 namespace ToDoListTest
@@ -13,13 +14,13 @@ namespace ToDoListTest
     public class TaskRepositoryTests : IDisposable
     {
         private readonly TododbContext _context;
-        private readonly TaskRepository _repository;
+        private readonly ITaskRepository _repository;
 
         public TaskRepositoryTests()
         {
             var options = new DbContextOptionsBuilder<TododbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
 
             _context = new TestTododbContext(options);
             _repository = new TaskRepository(_context);
@@ -30,7 +31,6 @@ namespace ToDoListTest
         {
             var newTask = new ToDoList.Models.Task
             {
-                Id = 1,
                 ListId = 1,
                 UserId = 1,
                 Title = "Test Task",
@@ -40,9 +40,9 @@ namespace ToDoListTest
                 Completed = false
             };
 
-            await _repository.AddTaskAsync(newTask);
+            await _repository.AddAsync(newTask);
 
-            var taskInDb = await _context.Tasks.FirstOrDefaultAsync(task => task.Id == newTask.Id);
+            var taskInDb = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == newTask.Id);
             Assert.NotNull(taskInDb);
             Assert.Equal("Test Task", taskInDb.Title);
         }
@@ -52,7 +52,6 @@ namespace ToDoListTest
         {
             var newTask = new ToDoList.Models.Task
             {
-                Id = 2,
                 ListId = 1,
                 UserId = 1,
                 Title = "Test Task",
@@ -62,11 +61,11 @@ namespace ToDoListTest
                 Completed = false
             };
 
-            await _repository.AddTaskAsync(newTask);
+            await _repository.AddAsync(newTask);
 
-            await _repository.DeleteTaskAsync(newTask.Id);
+            await _repository.DeleteAsync(newTask.Id);
 
-            var taskInDb = await _context.Tasks.FirstOrDefaultAsync(task => task.Id == newTask.Id);
+            var taskInDb = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == newTask.Id);
             Assert.Null(taskInDb);
         }
 
@@ -75,7 +74,6 @@ namespace ToDoListTest
         {
             var newTask = new ToDoList.Models.Task
             {
-                Id = 3,
                 ListId = 1,
                 UserId = 1,
                 Title = "Test Task",
@@ -85,16 +83,13 @@ namespace ToDoListTest
                 Completed = false
             };
 
-            await _repository.AddTaskAsync(newTask);
-            await _context.SaveChangesAsync();
+            await _repository.AddAsync(newTask);
 
             newTask.Title = "Test Task Update";
             newTask.Description = "Updated Description";
+            await _repository.UpdateAsync(newTask);
 
-            await _repository.UpdateTaskAsync(newTask);
-            await _context.SaveChangesAsync();
-
-            var taskInDb = await _context.Tasks.FirstOrDefaultAsync(task => task.Id == newTask.Id);
+            var taskInDb = await _repository.GetByIdAsync(newTask.Id);
             Assert.NotNull(taskInDb);
             Assert.Equal("Test Task Update", taskInDb.Title);
             Assert.Equal("Updated Description", taskInDb.Description);
@@ -105,7 +100,6 @@ namespace ToDoListTest
         {
             var newTask = new ToDoList.Models.Task
             {
-                Id = 4,
                 ListId = 1,
                 UserId = 1,
                 Title = "Test Task",
@@ -115,15 +109,16 @@ namespace ToDoListTest
                 Completed = false
             };
 
-            await _repository.AddTaskAsync(newTask);
+            await _repository.AddAsync(newTask);
 
-            var taskById = await _repository.GetTaskByIdAsync(newTask.Id);
+            var retrievedTask = await _repository.GetByIdAsync(newTask.Id);
 
-            Assert.NotNull(taskById);
+            Assert.NotNull(retrievedTask);
+            Assert.Equal("Test Task", retrievedTask.Title);
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetAllTaskAsync_Should_Get_All_Task_From_Database()
+        public async System.Threading.Tasks.Task GetAllTaskAsync_Should_Get_All_Tasks_From_Database()
         {
             var task1 = new ToDoList.Models.Task
             {
@@ -147,11 +142,10 @@ namespace ToDoListTest
                 Completed = false
             };
 
-            await _repository.AddTaskAsync(task1);
-            await _repository.AddTaskAsync(task2);
-            await _context.SaveChangesAsync();
+            await _repository.AddAsync(task1);
+            await _repository.AddAsync(task2);
 
-            var tasks = await _repository.GetAllTasksAsync();
+            var tasks = await _repository.GetAllAsync();
 
             Assert.NotNull(tasks);
             Assert.Equal(2, tasks.Count());
@@ -166,3 +160,4 @@ namespace ToDoListTest
         }
     }
 }
+

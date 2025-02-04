@@ -45,7 +45,7 @@ namespace ToDoListTest
             };
 
             _mockTaskRepository
-                .Setup(repo => repo.GetAllTasksAsync())
+                .Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(expectedTasks);
 
             var result = await _taskService.GetAllTasksAsync();
@@ -69,7 +69,7 @@ namespace ToDoListTest
             };
 
             _mockTaskRepository
-                .Setup(repo => repo.GetTaskByIdAsync(3))
+                .Setup(repo => repo.GetByIdAsync(3))
                 .ReturnsAsync(task);
 
             var result = await _taskService.GetTaskByIdAsync(3);
@@ -91,13 +91,13 @@ namespace ToDoListTest
             };
 
             _mockTaskRepository
-                .Setup(repo => repo.AddTaskAsync(newTask))
+                .Setup(repo => repo.AddAsync(newTask))
                 .Returns(System.Threading.Tasks.Task.CompletedTask)
                 .Verifiable();
 
             await _taskService.CreateTaskAsync(newTask);
 
-            _mockTaskRepository.Verify(repo => repo.AddTaskAsync(newTask), Times.Once);
+            _mockTaskRepository.Verify(repo => repo.AddAsync(newTask), Times.Once);
         }
 
         [Fact]
@@ -129,14 +129,14 @@ namespace ToDoListTest
             };
 
             _mockTaskRepository
-                .Setup(repo => repo.UpdateTaskAsync(existingTask))
+                .Setup(repo => repo.UpdateAsync(existingTask))
                 .Returns(System.Threading.Tasks.Task.CompletedTask)
                 .Verifiable();
 
             existingTask.Title = "New Title";
             await _taskService.UpdateTaskAsync(existingTask);
 
-            _mockTaskRepository.Verify(repo => repo.UpdateTaskAsync(existingTask), Times.Once);
+            _mockTaskRepository.Verify(repo => repo.UpdateAsync(existingTask), Times.Once);
         }
 
         [Fact]
@@ -144,13 +144,13 @@ namespace ToDoListTest
         {
             int taskId = 7;
             _mockTaskRepository
-                .Setup(repo => repo.DeleteTaskAsync(taskId))
+                .Setup(repo => repo.DeleteAsync(taskId))
                 .Returns(System.Threading.Tasks.Task.CompletedTask)
                 .Verifiable();
 
             await _taskService.DeleteTaskAsync(taskId);
 
-            _mockTaskRepository.Verify(repo => repo.DeleteTaskAsync(taskId), Times.Once);
+            _mockTaskRepository.Verify(repo => repo.DeleteAsync(taskId), Times.Once);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace ToDoList.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly ITaskRepository _taskRepository;
+        private readonly IRepository<Models.Task> _taskRepository;
 
         public TaskService(ITaskRepository taskRepository)
         {
@@ -15,14 +15,14 @@ namespace ToDoList.Services
 
         public async Task<IEnumerable<Models.Task>> GetAllTasksAsync()
         {
-            return await _taskRepository.GetAllTasksAsync();
+            return await _taskRepository.GetAllAsync();
         }
 
         public async System.Threading.Tasks.Task CreateTaskAsync(Models.Task task)
         {
             if (!string.IsNullOrWhiteSpace(task.Title))
             {
-                await _taskRepository.AddTaskAsync(task);
+                await _taskRepository.AddAsync(task);
             }
             else
             {
@@ -32,18 +32,18 @@ namespace ToDoList.Services
 
         public async System.Threading.Tasks.Task DeleteTaskAsync(int id)
         {
-            await _taskRepository.DeleteTaskAsync(id);
+            await _taskRepository.DeleteAsync(id);
         }
 
 
         public async Task<Models.Task> GetTaskByIdAsync(int id)
         {
-            return await _taskRepository.GetTaskByIdAsync(id);
+            return await _taskRepository.GetByIdAsync(id);
         }
 
         public async System.Threading.Tasks.Task UpdateTaskAsync(Models.Task task)
         {
-            await _taskRepository.UpdateTaskAsync(task);
+            await _taskRepository.UpdateAsync(task);
         }
     }
 
