@@ -1,11 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Data;
+using ToDoList.Repositories.Interfaces;
+using ToDoList.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<TododbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
+var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryDatabase");
+
+if (useInMemory)
+{
+    builder.Services.AddDbContext<TododbContext>(options =>
+        options.UseInMemoryDatabase("TestDatabase"));
+}
+else
+{
+    builder.Services.AddDbContext<TododbContext>(options =>
+        options.UseMySql(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
+}
+
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
