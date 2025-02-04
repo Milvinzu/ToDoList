@@ -13,7 +13,7 @@ namespace ToDoList.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Models.Task>> GetAllTaskASync()
+        public async Task<IEnumerable<Models.Task>> GetAllTaskAsync()
         {
             return await _context.Tasks.ToListAsync();
         }
