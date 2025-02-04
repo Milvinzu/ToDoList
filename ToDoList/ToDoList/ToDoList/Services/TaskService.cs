@@ -6,7 +6,7 @@ namespace ToDoList.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly IRepository<Models.Task> _taskRepository;
+        private readonly IBaseRepository<Models.Task> _taskRepository;
 
         public TaskService(ITaskRepository taskRepository)
         {

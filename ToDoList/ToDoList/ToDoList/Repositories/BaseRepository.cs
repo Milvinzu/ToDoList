@@ -4,12 +4,12 @@ using ToDoList.Repositories.Interfaces;
 
 namespace ToDoList.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected readonly TododbContext _context;
         protected readonly DbSet<T> _dbSet;
 
-        public Repository(TododbContext context)
+        public BaseRepository(TododbContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
