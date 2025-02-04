@@ -151,7 +151,7 @@ namespace ToDoListTest
             await _repository.AddTaskAsync(task2);
             await _context.SaveChangesAsync();
 
-            var tasks = await _repository.GetAllTaskAsync();
+            var tasks = await _repository.GetAllTasksAsync();
 
             Assert.NotNull(tasks);
             Assert.Equal(2, tasks.Count());

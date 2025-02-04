@@ -1,41 +1,49 @@
 ﻿using ToDoList.Data;
+using ToDoList.Repositories.Interfaces;
 using ToDoList.Services.Interfaces;
 
 namespace ToDoList.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly ITaskService _taskService;
+        private readonly ITaskRepository _taskRepository;
 
-        public TaskService(ITaskService taskService)
+        public TaskService(ITaskRepository taskRepository)
         {
-            _taskService = taskService;
+            _taskRepository = taskRepository;
         }
 
-        public async Task<IEnumerable<Models.Task>> GetAllTaskASync()
+        public async Task<IEnumerable<Models.Task>> GetAllTasksAsync()
         {
-            return await _taskService.GetAllTaskASync();
+            return await _taskRepository.GetAllTasksAsync();
         }
 
-        public async System.Threading.Tasks.Task AddTaskAsync(Models.Task task)
+        public async System.Threading.Tasks.Task CreateTaskAsync(Models.Task task)
         {
-            await _taskService.AddTaskAsync(task);
+            if (!string.IsNullOrWhiteSpace(task.Title))
+            {
+                await _taskRepository.AddTaskAsync(task);
+            }
+            else
+            {
+                throw new ArgumentException("Task title cannot be empty.");
+            }
         }
 
         public async System.Threading.Tasks.Task DeleteTaskAsync(int id)
         {
-            await _taskService.DeleteTaskAsync(id);
+            await _taskRepository.DeleteTaskAsync(id);
         }
 
 
         public async Task<Models.Task> GetTaskByIdAsync(int id)
         {
-            return await _taskService.GetTaskByIdAsync(id);
+            return await _taskRepository.GetTaskByIdAsync(id);
         }
 
         public async System.Threading.Tasks.Task UpdateTaskAsync(Models.Task task)
         {
-            await _taskService.UpdateTaskAsync(task);
+            await _taskRepository.UpdateTaskAsync(task);
         }
     }
 

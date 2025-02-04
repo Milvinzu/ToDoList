@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using ToDoList.Data;
 using ToDoList.Repositories.Interfaces;
 using ToDoList.Repositories;
+using ToDoList.Services.Interfaces;
+using ToDoList.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,7 @@ else
 }
 
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 
 // Add services to the container.
