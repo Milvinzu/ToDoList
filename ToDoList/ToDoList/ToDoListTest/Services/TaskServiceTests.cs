@@ -9,7 +9,7 @@ using ToDoList.Repositories.Interfaces;
 using ToDoList.Services;
 using ToDoList.Services.Interfaces;
 
-namespace ToDoListTest
+namespace ToDoListTest.Services
 {
     public class TaskServiceTests
     {
@@ -27,20 +27,20 @@ namespace ToDoListTest
         {
             var expectedTasks = new List<ToDoList.Models.Task>
             {
-                new ToDoList.Models.Task 
-                { 
-                    Id = 1, 
-                    Title = "Task 1", 
-                    ListId = 1, UserId = 1, 
-                    DueDate = DateTime.Now.AddDays(1) 
+                new ToDoList.Models.Task
+                {
+                    Id = 1,
+                    Title = "Task 1",
+                    ListId = 1, UserId = 1,
+                    DueDate = DateTime.Now.AddDays(1)
                 },
-                new ToDoList.Models.Task 
-                { 
-                    Id = 2, 
-                    Title = "Task 2", 
-                    ListId = 1, 
-                    UserId = 1, 
-                    DueDate = DateTime.Now.AddDays(2) 
+                new ToDoList.Models.Task
+                {
+                    Id = 2,
+                    Title = "Task 2",
+                    ListId = 1,
+                    UserId = 1,
+                    DueDate = DateTime.Now.AddDays(2)
                 }
             };
 
@@ -59,13 +59,13 @@ namespace ToDoListTest
         [Fact]
         public async System.Threading.Tasks.Task GetTaskByIdAsync_Should_Return_Task_When_Found()
         {
-            var task = new ToDoList.Models.Task 
-            { 
-                Id = 3, 
-                Title = "Task 3", 
-                ListId = 1, 
-                UserId = 1, 
-                DueDate = DateTime.Now.AddDays(1) 
+            var task = new ToDoList.Models.Task
+            {
+                Id = 3,
+                Title = "Task 3",
+                ListId = 1,
+                UserId = 1,
+                DueDate = DateTime.Now.AddDays(1)
             };
 
             _mockTaskRepository
@@ -81,13 +81,13 @@ namespace ToDoListTest
         [Fact]
         public async System.Threading.Tasks.Task CreateTaskAsync_Should_Call_AddTaskAsync_When_Task_Is_Valid()
         {
-            var newTask = new ToDoList.Models.Task 
-            { 
-                Id = 4, 
-                Title = "Valid Task", 
-                ListId = 1, 
-                UserId = 1, 
-                DueDate = DateTime.Now.AddDays(1) 
+            var newTask = new ToDoList.Models.Task
+            {
+                Id = 4,
+                Title = "Valid Task",
+                ListId = 1,
+                UserId = 1,
+                DueDate = DateTime.Now.AddDays(1)
             };
 
             _mockTaskRepository
@@ -103,13 +103,13 @@ namespace ToDoListTest
         [Fact]
         public async System.Threading.Tasks.Task CreateTaskAsync_Should_Throw_Exception_When_Title_Is_Empty()
         {
-            var newTask = new ToDoList.Models.Task 
-            { 
-                Id = 5, 
-                Title = "   ", 
-                ListId = 1, 
-                UserId = 1, 
-                DueDate = DateTime.Now.AddDays(1) 
+            var newTask = new ToDoList.Models.Task
+            {
+                Id = 5,
+                Title = "   ",
+                ListId = 1,
+                UserId = 1,
+                DueDate = DateTime.Now.AddDays(1)
             };
 
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _taskService.CreateTaskAsync(newTask));
@@ -119,13 +119,13 @@ namespace ToDoListTest
         [Fact]
         public async System.Threading.Tasks.Task UpdateTaskAsync_Should_Call_UpdateTaskAsync_On_Repository()
         {
-            var existingTask = new ToDoList.Models.Task 
-            { 
-                Id = 6, 
-                Title = "Old Title", 
-                ListId = 1, 
-                UserId = 1, 
-                DueDate = DateTime.Now.AddDays(1) 
+            var existingTask = new ToDoList.Models.Task
+            {
+                Id = 6,
+                Title = "Old Title",
+                ListId = 1,
+                UserId = 1,
+                DueDate = DateTime.Now.AddDays(1)
             };
 
             _mockTaskRepository

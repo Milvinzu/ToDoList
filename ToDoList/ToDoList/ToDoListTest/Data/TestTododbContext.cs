@@ -14,7 +14,10 @@ namespace ToDoListTest.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseInMemoryDatabase("TestDatabase");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseInMemoryDatabase("TestDatabase");
+            }
         }
     }
 }
