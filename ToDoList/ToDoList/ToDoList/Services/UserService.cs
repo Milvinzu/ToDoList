@@ -66,6 +66,28 @@ namespace ToDoList.Services
             return GenerateJwtToken(user);
         }
 
+        public Task ChangeNameAsync(int id, string newName)
+        {
+            if(string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("Invalid name format.");
+            }
+
+            _userRepository.ChangeNameAsync(id, newName);
+            return Task.CompletedTask;
+        }
+
+        public Task ChangePasswordAsync(int id, string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 8)
+            {
+                throw new ArgumentException("Password must be at least 8 characters long.");
+            }
+
+            _userRepository.ChangePasswordAsync(id, newPassword);
+            return Task.CompletedTask;
+        }
+
         private string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");

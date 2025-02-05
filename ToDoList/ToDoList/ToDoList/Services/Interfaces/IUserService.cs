@@ -8,6 +8,7 @@ namespace ToDoList.Services.Interfaces
     {
         Task RegisterUserAsync(string email, string password);
         Task<string> LoginUserAsync(string email, string password);
-
+        Task ChangeNameAsync(int id, string newName);
+        Task ChangePasswordAsync(int id, string newPassword);
     }
 }
