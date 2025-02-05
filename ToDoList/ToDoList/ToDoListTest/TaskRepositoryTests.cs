@@ -149,8 +149,8 @@ namespace ToDoListTest
 
             Assert.NotNull(tasks);
             Assert.Equal(2, tasks.Count());
-            Assert.Contains(tasks, t => t.Title == "Task 1");
-            Assert.Contains(tasks, t => t.Title == "Task 2");
+            Assert.Contains(tasks, task => task.Title == "Task 1");
+            Assert.Contains(tasks, task => task.Title == "Task 2");
         }
 
         public void Dispose()
