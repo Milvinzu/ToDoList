@@ -22,8 +22,16 @@ else
             ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
 }
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IListRepository, ListRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ITaskReminderRepository, TaskReminderRepository>();
+builder.Services.AddScoped<ITaskTagRepository, TaskTagRepository>();
+builder.Services.AddScoped<ISubtaskRepository, SubtaskRepository>();
+builder.Services.AddScoped<ITaskAttachmentRepository, TaskAttachmentRepository>();
+builder.Services.AddScoped<ITaskCollaboratorRepository, TaskCollaboratorRepository>();
+builder.Services.AddScoped<IRecurringTaskRepository, RecurringTaskRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 
 // Add services to the container.
