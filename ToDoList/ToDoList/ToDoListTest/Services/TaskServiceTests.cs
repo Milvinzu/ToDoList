@@ -23,7 +23,7 @@ namespace ToDoListTest.Services
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetAllTasksAsync_Should_Return_All_Tasks()
+        public async System.Threading.Tasks.Task GetAllTasksAsync_ShouldReturnAllTasks()
         {
             var expectedTasks = new List<ToDoList.Models.Task>
             {
@@ -57,7 +57,7 @@ namespace ToDoListTest.Services
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetTaskByIdAsync_Should_Return_Task_When_Found()
+        public async System.Threading.Tasks.Task GetTaskByIdAsync_ShouldReturnTaskWhenFound()
         {
             var task = new ToDoList.Models.Task
             {
@@ -79,7 +79,7 @@ namespace ToDoListTest.Services
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task CreateTaskAsync_Should_Call_AddTaskAsync_When_Task_Is_Valid()
+        public async System.Threading.Tasks.Task CreateTaskAsync_ShouldCallAddTaskAsyncWhenTaskIsValid()
         {
             var newTask = new ToDoList.Models.Task
             {
@@ -101,7 +101,7 @@ namespace ToDoListTest.Services
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task CreateTaskAsync_Should_Throw_Exception_When_Title_Is_Empty()
+        public async System.Threading.Tasks.Task CreateTaskAsync_ShouldThrowExceptionWhenTitleIsEmpty()
         {
             var newTask = new ToDoList.Models.Task
             {
@@ -117,7 +117,7 @@ namespace ToDoListTest.Services
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task UpdateTaskAsync_Should_Call_UpdateTaskAsync_On_Repository()
+        public async System.Threading.Tasks.Task UpdateTaskAsync_ShouldCallUpdateTaskAsyncOnRepository()
         {
             var existingTask = new ToDoList.Models.Task
             {
@@ -140,7 +140,7 @@ namespace ToDoListTest.Services
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task DeleteTaskAsync_Should_Call_DeleteTaskAsync_On_Repository()
+        public async System.Threading.Tasks.Task DeleteTaskAsync_ShouldCallDeleteTaskAsyncOnRepository()
         {
             int taskId = 7;
             _mockTaskRepository

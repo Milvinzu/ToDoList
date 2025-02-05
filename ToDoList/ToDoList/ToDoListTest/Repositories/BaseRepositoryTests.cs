@@ -29,7 +29,7 @@ namespace ToDoListTest.Repositories
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task AddAsync_Should_Add_Entity_To_Database()
+        public async System.Threading.Tasks.Task AddAsync_ShouldAddEntityToDatabase()
         {
             var entity = CreateTestEntity();
             await _repository.AddAsync(entity);
@@ -39,7 +39,7 @@ namespace ToDoListTest.Repositories
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task DeleteAsync_Should_Remove_Entity_From_Database()
+        public async System.Threading.Tasks.Task DeleteAsync_ShouldRemoveEntityFromDatabase()
         {
             var entity = CreateTestEntity();
             await _repository.AddAsync(entity);
@@ -50,7 +50,7 @@ namespace ToDoListTest.Repositories
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task UpdateAsync_Should_Update_Entity_In_Database()
+        public async System.Threading.Tasks.Task UpdateAsync_ShouldUpdateEntityInDatabase()
         {
             var entity = CreateTestEntity();
             await _repository.AddAsync(entity);
@@ -64,7 +64,7 @@ namespace ToDoListTest.Repositories
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetByIdAsync_Should_Get_Entity_By_Id()
+        public async System.Threading.Tasks.Task GetByIdAsync_ShouldGetEntityById()
         {
             var entity = CreateTestEntity();
             await _repository.AddAsync(entity);
@@ -76,7 +76,7 @@ namespace ToDoListTest.Repositories
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetAllAsync_Should_Get_All_Entities()
+        public async System.Threading.Tasks.Task GetAllAsync_ShouldGetAllEntities()
         {
             var entity1 = CreateTestEntity();
             var entity2 = CreateTestEntity();
