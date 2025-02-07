@@ -1,156 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Moq;
-using Xunit;
-using ToDoList.Models;
+﻿using Moq;
 using ToDoList.Repositories.Interfaces;
 using ToDoList.Services;
-using ToDoList.Services.Interfaces;
+using TaskEntity = ToDoList.Models.Task;
+using Task = System.Threading.Tasks.Task;
 
 namespace ToDoListTest.Services
 {
     public class TaskServiceTests
     {
-        private readonly ITaskService _taskService;
-        private readonly Mock<ITaskRepository> _mockTaskRepository;
+        private readonly Mock<ITaskRepository> _taskRepositoryMock;
+        private readonly TaskService _taskService;
 
         public TaskServiceTests()
         {
-            _mockTaskRepository = new Mock<ITaskRepository>();
-            _taskService = new TaskService(_mockTaskRepository.Object);
+            _taskRepositoryMock = new Mock<ITaskRepository>();
+            _taskService = new TaskService(_taskRepositoryMock.Object);
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetAllTasksAsync_ShouldReturnAllTasks()
+        public async Task CreateTaskAsync_ShouldAddTaskWhenValid()
         {
-            var expectedTasks = new List<ToDoList.Models.Task>
-            {
-                new ToDoList.Models.Task
-                {
-                    Id = 1,
-                    Title = "Task 1",
-                    ListId = 1, UserId = 1,
-                    DueDate = DateTime.Now.AddDays(1)
-                },
-                new ToDoList.Models.Task
-                {
-                    Id = 2,
-                    Title = "Task 2",
-                    ListId = 1,
-                    UserId = 1,
-                    DueDate = DateTime.Now.AddDays(2)
-                }
-            };
+            int listId = 1;
+            int userId = 1;
+            string title = "New Task";
 
-            _mockTaskRepository
-                .Setup(repo => repo.GetAllAsync())
-                .ReturnsAsync(expectedTasks);
+            _taskRepositoryMock
+                .Setup(repo => repo.AddAsync(It.IsAny<TaskEntity>()))
+                .Returns(Task.CompletedTask);
 
-            var result = await _taskService.GetAllTasksAsync();
+            await _taskService.CreateTaskAsync(listId, userId, title);
 
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Count());
-            Assert.Contains(result, t => t.Title == "Task 1");
-            Assert.Contains(result, t => t.Title == "Task 2");
+            _taskRepositoryMock.Verify(repo => repo.AddAsync(It.Is<TaskEntity>(taskEntity =>
+                taskEntity.ListId == listId &&
+                taskEntity.UserId == userId &&
+                taskEntity.Title == title)), Times.Once);
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetTaskByIdAsync_ShouldReturnTaskWhenFound()
+        public async Task ChangeStatusAsync_ShouldToggleCompletedStatus()
         {
-            var task = new ToDoList.Models.Task
-            {
-                Id = 3,
-                Title = "Task 3",
-                ListId = 1,
-                UserId = 1,
-                DueDate = DateTime.Now.AddDays(1)
-            };
+            int taskId = 1;
+            var taskEntity = new TaskEntity { Id = taskId, Completed = false };
 
-            _mockTaskRepository
-                .Setup(repo => repo.GetByIdAsync(3))
-                .ReturnsAsync(task);
+            _taskRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(taskId))
+                .ReturnsAsync(taskEntity);
+            _taskRepositoryMock
+                .Setup(repo => repo.UpdateAsync(taskEntity))
+                .Returns(Task.CompletedTask);
 
-            var result = await _taskService.GetTaskByIdAsync(3);
+            await _taskService.ChangeStatusAsync(taskId);
 
-            Assert.NotNull(result);
-            Assert.Equal("Task 3", result.Title);
+            Assert.True(taskEntity.Completed);
+            _taskRepositoryMock.Verify(repo => repo.UpdateAsync(taskEntity), Times.Once);
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task CreateTaskAsync_ShouldCallAddTaskAsyncWhenTaskIsValid()
+        public async Task DeleteTaskAsync_ShouldRemoveTask()
         {
-            var newTask = new ToDoList.Models.Task
-            {
-                Id = 4,
-                Title = "Valid Task",
-                ListId = 1,
-                UserId = 1,
-                DueDate = DateTime.Now.AddDays(1)
-            };
-
-            _mockTaskRepository
-                .Setup(repo => repo.AddAsync(newTask))
-                .Returns(System.Threading.Tasks.Task.CompletedTask)
-                .Verifiable();
-
-            await _taskService.CreateTaskAsync(newTask);
-
-            _mockTaskRepository.Verify(repo => repo.AddAsync(newTask), Times.Once);
-        }
-
-        [Fact]
-        public async System.Threading.Tasks.Task CreateTaskAsync_ShouldThrowExceptionWhenTitleIsEmpty()
-        {
-            var newTask = new ToDoList.Models.Task
-            {
-                Id = 5,
-                Title = "   ",
-                ListId = 1,
-                UserId = 1,
-                DueDate = DateTime.Now.AddDays(1)
-            };
-
-            var exception = await Assert.ThrowsAsync<ArgumentException>(() => _taskService.CreateTaskAsync(newTask));
-            Assert.Equal("Task title cannot be empty.", exception.Message);
-        }
-
-        [Fact]
-        public async System.Threading.Tasks.Task UpdateTaskAsync_ShouldCallUpdateTaskAsyncOnRepository()
-        {
-            var existingTask = new ToDoList.Models.Task
-            {
-                Id = 6,
-                Title = "Old Title",
-                ListId = 1,
-                UserId = 1,
-                DueDate = DateTime.Now.AddDays(1)
-            };
-
-            _mockTaskRepository
-                .Setup(repo => repo.UpdateAsync(existingTask))
-                .Returns(System.Threading.Tasks.Task.CompletedTask)
-                .Verifiable();
-
-            existingTask.Title = "New Title";
-            await _taskService.UpdateTaskAsync(existingTask);
-
-            _mockTaskRepository.Verify(repo => repo.UpdateAsync(existingTask), Times.Once);
-        }
-
-        [Fact]
-        public async System.Threading.Tasks.Task DeleteTaskAsync_ShouldCallDeleteTaskAsyncOnRepository()
-        {
-            int taskId = 7;
-            _mockTaskRepository
+            int taskId = 1;
+            _taskRepositoryMock
                 .Setup(repo => repo.DeleteAsync(taskId))
-                .Returns(System.Threading.Tasks.Task.CompletedTask)
-                .Verifiable();
+                .Returns(Task.CompletedTask);
 
             await _taskService.DeleteTaskAsync(taskId);
 
-            _mockTaskRepository.Verify(repo => repo.DeleteAsync(taskId), Times.Once);
+            _taskRepositoryMock.Verify(repo => repo.DeleteAsync(taskId), Times.Once);
         }
     }
 }

@@ -1,47 +1,68 @@
-﻿using ToDoList.Repositories;
-using ToDoListTest.Repositories;
-
+﻿using Microsoft.EntityFrameworkCore;
+using Moq;
+using ToDoList.Data;
+using ToDoList.Models;
+using ToDoList.Repositories;
+using ToDoList.Repositories.Interfaces;
+using ToDoList.Services;
+using ToDoListTest.Data;
 
 namespace ToDoListTest.Repositories
 {
-    public class TaskRepositoryTests : BaseRepositoryTests<TaskRepository, ToDoList.Models.Task>
+    public class TaskRepositoryTests : IDisposable
     {
+        private readonly TododbContext _context;
+        private readonly ITaskRepository _repository;
+
         public TaskRepositoryTests()
-            : base(context => new TaskRepository(context)) { }
-
-        protected override ToDoList.Models.Task CreateTestEntity()
         {
-            return new ToDoList.Models.Task
-            {
-                ListId = 1,
-                UserId = 1,
-                Title = "Test Task",
-                Description = "Test Description",
-                DueDate = DateTime.Now.AddDays(1),
-                Priority = 1,
-                Completed = false
+            var options = new DbContextOptionsBuilder<TododbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+            _context = new TestTododbContext(options);
+            _repository = new TaskRepository(_context);
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task GetTasksByListIdAsync_ShouldReturnTasks()
+        {
+            int listId = 1;
+            var task = new ToDoList.Models.Task 
+            { 
+                ListId = listId, 
+                UserId = 1, 
+                Title = "Test Task", 
+                Completed = false 
             };
+            await _repository.AddAsync(task);
+
+            var result = await _repository.GetTasksByListIdAsync(listId);
+            Assert.Single(result);
+            Assert.Equal("Test Task", result.First().Title);
         }
 
-        protected override object GetEntityId(ToDoList.Models.Task entity) => entity.Id;
-
-        protected override void ModifyEntity(ToDoList.Models.Task entity)
+        [Fact]
+        public async System.Threading.Tasks.Task GetTasksByUserIdAsync_ShouldReturnTasks()
         {
-            entity.Title = "Updated Task";
-            entity.Description = "Updated Description";
+            int userId = 2;
+            var task = new ToDoList.Models.Task 
+            { 
+                ListId = 1, 
+                UserId = userId, 
+                Title = "User Task", 
+                Completed = false 
+            };
+            await _repository.AddAsync(task);
+
+            var result = await _repository.GetTasksByUserIdAsync(userId);
+            Assert.Single(result);
+            Assert.Equal("User Task", result.First().Title);
         }
 
-        protected override void AssertEntityUpdated(ToDoList.Models.Task entity)
+        public void Dispose()
         {
-            Assert.Equal("Updated Task", entity.Title);
-            Assert.Equal("Updated Description", entity.Description);
-        }
-
-        protected override void AssertEntityMatches(ToDoList.Models.Task expected, ToDoList.Models.Task actual)
-        {
-            Assert.Equal(expected.Title, actual.Title);
-            Assert.Equal(expected.Description, actual.Description);
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
         }
     }
-
 }
