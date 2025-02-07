@@ -55,7 +55,6 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(secretKey)
         };
 
-        // Додати логування для аутентифікації
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
