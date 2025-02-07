@@ -1,17 +1,16 @@
 ﻿using ToDoList.Repositories;
-using ToDoListTest.Repositories;
-
+using TaskEntity = ToDoList.Models.Task;
 
 namespace ToDoListTest.Repositories
 {
-    public class BaseTaskRepositoryTests : BaseRepositoryTests<TaskRepository, ToDoList.Models.Task>
+    public class BaseTaskRepositoryTests : BaseRepositoryTests<TaskRepository, TaskEntity>
     {
         public BaseTaskRepositoryTests()
             : base(context => new TaskRepository(context)) { }
 
-        protected override ToDoList.Models.Task CreateTestEntity()
+        protected override TaskEntity CreateTestEntity()
         {
-            return new ToDoList.Models.Task
+            return new TaskEntity
             {
                 ListId = 1,
                 UserId = 1,
@@ -23,21 +22,21 @@ namespace ToDoListTest.Repositories
             };
         }
 
-        protected override object GetEntityId(ToDoList.Models.Task entity) => entity.Id;
+        protected override object GetEntityId(TaskEntity entity) => entity.Id;
 
-        protected override void ModifyEntity(ToDoList.Models.Task entity)
+        protected override void ModifyEntity(TaskEntity entity)
         {
             entity.Title = "Updated Task";
             entity.Description = "Updated Description";
         }
 
-        protected override void AssertEntityUpdated(ToDoList.Models.Task entity)
+        protected override void AssertEntityUpdated(TaskEntity entity)
         {
             Assert.Equal("Updated Task", entity.Title);
             Assert.Equal("Updated Description", entity.Description);
         }
 
-        protected override void AssertEntityMatches(ToDoList.Models.Task expected, ToDoList.Models.Task actual)
+        protected override void AssertEntityMatches(TaskEntity expected, TaskEntity actual)
         {
             Assert.Equal(expected.Title, actual.Title);
             Assert.Equal(expected.Description, actual.Description);

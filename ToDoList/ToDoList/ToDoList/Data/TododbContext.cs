@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 using ToDoList.Models;
-using Task = ToDoList.Models.Task;
+using TaskEntity = ToDoList.Models.Task;
 
 namespace ToDoList.Data;
 
@@ -26,7 +26,7 @@ public partial class TododbContext : DbContext
 
     public virtual DbSet<Subtask> Subtasks { get; set; }
 
-    public virtual DbSet<Task> Tasks { get; set; }
+    public virtual DbSet<TaskEntity> Tasks { get; set; }
 
     public virtual DbSet<Taskattachment> Taskattachments { get; set; }
 
@@ -144,7 +144,7 @@ public partial class TododbContext : DbContext
                 .HasConstraintName("subtasks_ibfk_1");
         });
 
-        modelBuilder.Entity<Task>(entity =>
+        modelBuilder.Entity<TaskEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 

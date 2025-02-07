@@ -1,6 +1,7 @@
 ﻿using ToDoList.Data;
 using ToDoList.Repositories.Interfaces;
 using ToDoList.Services.Interfaces;
+using TaskEntity = ToDoList.Models.Task;
 
 namespace ToDoList.Services
 {
@@ -13,14 +14,14 @@ namespace ToDoList.Services
             _taskRepository = taskRepository;
         }
 
-        public async System.Threading.Tasks.Task CreateTaskAsync(int listId, int userId, string title)
+        public async Task CreateTaskAsync(int listId, int userId, string title)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
                 throw new ArgumentException("Task title cannot be empty.");
             }
 
-            Models.Task newTask = new Models.Task()
+            TaskEntity newTask = new TaskEntity()
             {
                 ListId = listId,
                 UserId = userId,
@@ -32,9 +33,9 @@ namespace ToDoList.Services
             await _taskRepository.AddAsync(newTask);
         }
 
-        public async System.Threading.Tasks.Task ChangeStatusAsync(int id)
+        public async Task ChangeStatusAsync(int id)
         {
-            Models.Task task = await _taskRepository.GetByIdAsync(id);
+            TaskEntity task = await _taskRepository.GetByIdAsync(id);
 
             if(task == null)
             {
@@ -45,9 +46,9 @@ namespace ToDoList.Services
             await _taskRepository.UpdateAsync(task);
         }
 
-        public async System.Threading.Tasks.Task ChangeTitleAsync(int id, string title)
+        public async Task ChangeTitleAsync(int id, string title)
         {
-            Models.Task task = await _taskRepository.GetByIdAsync(id);
+            TaskEntity task = await _taskRepository.GetByIdAsync(id);
 
             if (task == null)
             {
@@ -58,9 +59,9 @@ namespace ToDoList.Services
             await _taskRepository.UpdateAsync(task);
         }
 
-        public async System.Threading.Tasks.Task SetDeadlineTimeAsync(int id, DateTime dateTime)
+        public async Task SetDeadlineTimeAsync(int id, DateTime dateTime)
         {
-            Models.Task task = await _taskRepository.GetByIdAsync(id);
+            TaskEntity task = await _taskRepository.GetByIdAsync(id);
 
             if (task == null)
             {
@@ -71,9 +72,9 @@ namespace ToDoList.Services
             await _taskRepository.UpdateAsync(task);
         }
 
-        public async System.Threading.Tasks.Task UpdateDescriptionAsync(int id, string description)
+        public async Task UpdateDescriptionAsync(int id, string description)
         {
-            Models.Task task = await _taskRepository.GetByIdAsync(id);
+            TaskEntity task = await _taskRepository.GetByIdAsync(id);
 
             if (task == null)
             {
@@ -84,17 +85,17 @@ namespace ToDoList.Services
             await _taskRepository.UpdateAsync(task);
         }
 
-        public async Task<IEnumerable<Models.Task>> GetAllTaskByUser(int userId)
+        public async Task<IEnumerable<TaskEntity>> GetAllTaskByUser(int userId)
         {
             return await _taskRepository.GetTasksByUserIdAsync(userId);
         }
 
-        public async Task<IEnumerable<Models.Task>> GetAllTaskFromList(int listId)
+        public async Task<IEnumerable<TaskEntity>> GetAllTaskFromList(int listId)
         {
             return await _taskRepository.GetTasksByListIdAsync(listId);
         }
 
-        public async System.Threading.Tasks.Task DeleteTaskAsync(int id)
+        public async Task DeleteTaskAsync(int id)
         {
             await _taskRepository.DeleteAsync(id);
         }

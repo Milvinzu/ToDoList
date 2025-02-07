@@ -1,8 +1,10 @@
-﻿namespace ToDoList.Repositories.Interfaces
+﻿using TaskEntity = ToDoList.Models.Task;
+
+namespace ToDoList.Repositories.Interfaces
 {
-    public interface ITaskRepository : IBaseRepository<ToDoList.Models.Task> 
+    public interface ITaskRepository : IBaseRepository<TaskEntity> 
     {
-        Task<IEnumerable<Models.Task>> GetTasksByUserIdAsync(int userId);
-        Task<IEnumerable<Models.Task>> GetTasksByListIdAsync(int listId);
+        Task<IEnumerable<TaskEntity>> GetTasksByUserIdAsync(int userId);
+        Task<IEnumerable<TaskEntity>> GetTasksByListIdAsync(int listId);
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using ToDoList.Data;
-using ToDoList.Models;
 using ToDoList.Repositories;
 using ToDoList.Repositories.Interfaces;
-using ToDoList.Services;
 using ToDoListTest.Data;
+using Task = System.Threading.Tasks.Task;
+using TaskEntity = ToDoList.Models.Task;
 
 namespace ToDoListTest.Repositories
 {
@@ -24,10 +24,10 @@ namespace ToDoListTest.Repositories
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetTasksByListIdAsync_ShouldReturnTasks()
+        public async Task GetTasksByListIdAsync_ShouldReturnTasks()
         {
             int listId = 1;
-            var task = new ToDoList.Models.Task 
+            var task = new TaskEntity
             { 
                 ListId = listId, 
                 UserId = 1, 
@@ -42,10 +42,10 @@ namespace ToDoListTest.Repositories
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task GetTasksByUserIdAsync_ShouldReturnTasks()
+        public async Task GetTasksByUserIdAsync_ShouldReturnTasks()
         {
             int userId = 2;
-            var task = new ToDoList.Models.Task 
+            var task = new TaskEntity
             { 
                 ListId = 1, 
                 UserId = userId, 
