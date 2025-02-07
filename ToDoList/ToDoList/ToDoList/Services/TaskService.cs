@@ -95,6 +95,37 @@ namespace ToDoList.Services
             return await _taskRepository.GetTasksByListIdAsync(listId);
         }
 
+        public async Task SetTimeRemindAsync(int id, DateTime remindTime)
+        {
+            TaskEntity task = await _taskRepository.GetByIdAsync(id);
+
+            if (task == null)
+            {
+                throw new ArgumentException("Task not found");
+            }
+
+            if (remindTime < DateTime.UtcNow)
+            {
+                throw new ArgumentException("Time cannot be in the past");
+            }
+
+            task.ReminderTime = remindTime;
+            await _taskRepository.UpdateAsync(task);
+        }
+
+        public async Task OffRemindAsync(int id)
+        {
+            TaskEntity task = await _taskRepository.GetByIdAsync(id);
+
+            if (task == null)
+            {
+                throw new ArgumentException("Task not found");
+            }
+
+            task.ReminderTime = null;
+            await _taskRepository.UpdateAsync(task);
+        }
+
         public async Task DeleteTaskAsync(int id)
         {
             await _taskRepository.DeleteAsync(id);

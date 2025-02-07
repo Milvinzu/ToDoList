@@ -32,8 +32,6 @@ public partial class TododbContext : DbContext
 
     public virtual DbSet<Taskcollaborator> Taskcollaborators { get; set; }
 
-    public virtual DbSet<Taskreminder> Taskreminders { get; set; }
-
     public virtual DbSet<Tasktag> Tasktags { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -231,25 +229,6 @@ public partial class TododbContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("taskcollaborators_ibfk_2");
-        });
-
-        modelBuilder.Entity<Taskreminder>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("taskreminders");
-
-            entity.HasIndex(e => e.TaskId, "task_id");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ReminderTime)
-                .HasColumnType("datetime")
-                .HasColumnName("reminder_time");
-            entity.Property(e => e.TaskId).HasColumnName("task_id");
-
-            entity.HasOne(d => d.Task).WithMany(p => p.Taskreminders)
-                .HasForeignKey(d => d.TaskId)
-                .HasConstraintName("taskreminders_ibfk_1");
         });
 
         modelBuilder.Entity<Tasktag>(entity =>

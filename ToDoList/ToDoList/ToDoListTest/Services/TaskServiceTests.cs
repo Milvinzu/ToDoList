@@ -67,5 +67,89 @@ namespace ToDoListTest.Services
 
             _taskRepositoryMock.Verify(repo => repo.DeleteAsync(taskId), Times.Once);
         }
+
+        [Fact]
+        public async Task SetTimeRemindAsync_ShouldUpdateReminderTime_WhenTaskExists()
+        {
+            int taskId = 1;
+            DateTime newRemindTime = DateTime.UtcNow.AddHours(1);
+            var taskEntity = new TaskEntity { Id = taskId, ReminderTime = null };
+
+            _taskRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(taskId))
+                .ReturnsAsync(taskEntity);
+            _taskRepositoryMock
+                .Setup(repo => repo.UpdateAsync(taskEntity))
+                .Returns(Task.CompletedTask);
+
+            await _taskService.SetTimeRemindAsync(taskId, newRemindTime);
+
+            Assert.Equal(newRemindTime, taskEntity.ReminderTime);
+            _taskRepositoryMock.Verify(repo => repo.UpdateAsync(taskEntity), Times.Once);
+        }
+
+        [Fact]
+        public async Task SetTimeRemindAsync_ShouldThrowArgumentException_WhenTaskNotFound()
+        {
+            int taskId = 99;
+            DateTime newRemindTime = DateTime.UtcNow.AddHours(1);
+
+            _taskRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(taskId))
+                .ReturnsAsync((TaskEntity)null);
+
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _taskService.SetTimeRemindAsync(taskId, newRemindTime));
+        }
+
+        [Fact]
+        public async Task SetTimeRemindAsync_ShouldThrowException_WhenRemindTimeIsInThePast()
+        {
+            int taskId = 1;
+            DateTime pastTime = DateTime.UtcNow.AddHours(-1);
+            var taskEntity = new TaskEntity { Id = taskId, ReminderTime = null };
+
+            _taskRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(taskId))
+                .ReturnsAsync(taskEntity);
+
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _taskService.SetTimeRemindAsync(taskId, pastTime));
+        }
+
+        [Fact]
+        public async Task OffRemindAsync_ShouldSetReminderTimeToNull_WhenTaskExists()
+        {
+            int taskId = 1;
+            var existingTask = new TaskEntity
+            {
+                Id = taskId,
+                ReminderTime = DateTime.UtcNow.AddHours(1)
+            };
+
+            _taskRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(taskId))
+                .ReturnsAsync(existingTask);
+            _taskRepositoryMock
+                .Setup(repo => repo.UpdateAsync(existingTask))
+                .Returns(Task.CompletedTask);
+
+            await _taskService.OffRemindAsync(taskId);
+
+            Assert.Null(existingTask.ReminderTime);
+            _taskRepositoryMock.Verify(repo => repo.UpdateAsync(existingTask), Times.Once);
+        }
+
+        [Fact]
+        public async Task OffRemindAsync_ShouldThrowArgumentException_WhenTaskNotFound()
+        {
+            int taskId = 99;
+            _taskRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(taskId))
+                .ReturnsAsync((TaskEntity)null);
+
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _taskService.OffRemindAsync(taskId));
+        }
     }
 }

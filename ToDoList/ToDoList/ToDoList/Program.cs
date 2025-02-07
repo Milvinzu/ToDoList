@@ -28,7 +28,6 @@ else
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IListRepository, ListRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<ITaskReminderRepository, TaskReminderRepository>();
 builder.Services.AddScoped<ITaskTagRepository, TaskTagRepository>();
 builder.Services.AddScoped<ISubtaskRepository, SubtaskRepository>();
 builder.Services.AddScoped<ITaskAttachmentRepository, TaskAttachmentRepository>();

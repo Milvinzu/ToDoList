@@ -20,6 +20,7 @@ public partial class Task
     public int? Priority { get; set; }
 
     public bool? Completed { get; set; }
+    public DateTime? ReminderTime { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
@@ -30,8 +31,6 @@ public partial class Task
     public virtual ICollection<Subtask> Subtasks { get; set; } = new List<Subtask>();
 
     public virtual ICollection<Taskattachment> Taskattachments { get; set; } = new List<Taskattachment>();
-
-    public virtual ICollection<Taskreminder> Taskreminders { get; set; } = new List<Taskreminder>();
 
     public virtual ICollection<Tasktag> Tasktags { get; set; } = new List<Tasktag>();
 
